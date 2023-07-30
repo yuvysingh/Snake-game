@@ -31,6 +31,8 @@ def update_snake(
 ):  # Updates the attributes of the snake then displays it
     snake.update_all_directions(direction)
     snake.update_snake_pos()
+    if snake.detect_collision():  # if there is a collison the function will end
+        return True
     screen.fill(BLACK)  # this covers up the previous green rects which we have drawn
     snake.display_snake(screen)
 
@@ -64,7 +66,10 @@ def main():  # start the game
                 elif event.key == pygame.K_DOWN and snake.head.direction != [0, -1]:
                     direction = [0, 1]
 
-        update_snake(snake, direction, SCREEN)  # takes in the previous or new direction
+        if update_snake(  # checks for collison, if there is one we end the fame
+            snake, direction, SCREEN
+        ):  # takes in the previous or new direction
+            pygame.quit()
         drawGrid(SCREEN)
         pygame.display.update()
         clock.tick(10)  # 10 frames a second

@@ -69,3 +69,28 @@ class snake_obj:  # Stores the array of snake squares
     def display_snake(self, screen):  # displays all the squares
         for square in self.snake:
             square.display_square(screen)
+
+    def detect_collision(
+        self,
+    ):  # check if the snake head goes out of bounds or into itself
+        if self.head.co_ords[0] >= 20 or self.head.co_ords[0] < 0:
+            return True
+
+        elif self.head.co_ords[1] >= 20 or self.head.co_ords[1] < 0:
+            return True
+
+        elif linear_search(
+            [square.co_ords for square in self.snake[1:]], self.head.co_ords
+        ):  # list of snake co-ords
+            return True
+
+        else:
+            return False
+
+
+def linear_search(l, target):  # standard linear search
+    for element in l:
+        if element == target:
+            return True
+
+    return False
