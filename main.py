@@ -8,6 +8,8 @@
 
 import pygame
 from snake import snake_obj
+from apple import Apple
+from apple import generate_co_ords
 
 # RGB values
 BLACK = (0, 0, 0)
@@ -26,15 +28,25 @@ def drawGrid(SCREEN):  # Draw the outline only for the grid
             pygame.draw.rect(SCREEN, WHITE, rect, 1)
 
 
+GRID = []
+# creates a grid with all co-ordinates
+for x in range(0, 20):
+    for y in range(0, 20):
+        GRID.append([x, y])
+
+
 def update_snake(
-    snake, direction, screen
+    snake, direction, screen, apple
 ):  # Updates the attributes of the snake then displays it
     snake.update_all_directions(direction)
     snake.update_snake_pos()
     if snake.detect_collision():  # if there is a collison the function will end
         return True
+
     screen.fill(BLACK)  # this covers up the previous green rects which we have drawn
+    apple.display_apple(screen)
     snake.display_snake(screen)
+    return False
 
 
 def main():  # start the game
@@ -44,6 +56,7 @@ def main():  # start the game
     snake = snake_obj()
     clock = pygame.time.Clock()
     direction = [0, -1]
+    apple = Apple([10, 10])
 
     SCREEN.fill(BLACK)
     drawGrid(SCREEN)
@@ -52,6 +65,7 @@ def main():  # start the game
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                break
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP and snake.head.direction != [
@@ -67,9 +81,20 @@ def main():  # start the game
                     direction = [0, 1]
 
         if update_snake(  # checks for collison, if there is one we end the fame
-            snake, direction, SCREEN
+            snake, direction, SCREEN, apple
         ):  # takes in the previous or new direction
             pygame.quit()
+            break
+
+        if apple.check_if_eaten(
+            snake.head.co_ords
+        ):  # if the apple is eaten, we create a new one
+            snake.add_square()
+            apple = Apple(
+                generate_co_ords(GRID, [square.co_ords for square in snake.snake])
+            )
+            apple.display_apple(SCREEN)
+
         drawGrid(SCREEN)
         pygame.display.update()
         clock.tick(10)  # 10 frames a second

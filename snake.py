@@ -87,6 +87,16 @@ class snake_obj:  # Stores the array of snake squares
         else:
             return False
 
+    def add_square(self):  # adds a new square with pos of the last square - direction
+        self.snake.append(
+            square(
+                self.snake[-1].co_ords[0] - self.snake[-1].direction[0],
+                self.snake[-1].co_ords[1] - self.snake[-1].direction[1],
+                self.snake[-1].direction,
+            )
+        )
+        self.length += 1
+
 
 def linear_search(l, target):  # standard linear search
     for element in l:
